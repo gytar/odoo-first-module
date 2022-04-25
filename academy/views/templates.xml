@@ -1,0 +1,81 @@
+<odoo>
+
+  <data>
+    
+    <!-- template without website structure -->
+    
+    <template id="index" name="index">
+      <title>Academy</title>
+      <t t-foreach="teachers" t-as="teacher">
+        <p>
+          <t t-esc="teacher" />
+        </p>
+      </t>
+    </template>
+    
+    <!-- this is the template with the website structure -->
+    
+    <template id="index_database">
+      <t t-call="website.layout">
+        <title>Academy with database</title>
+        <div class="oe_structure">
+          <div class="container">
+            <!-- first model -->
+            <t t-foreach="teachers" t-as="teacher">
+              <p><t t-esc="teacher.id" /> - <t t-esc="teacher.name" /></p>
+            </t>
+            <!-- model with slug -->
+            <t t-foreach="teachers" t-as="teacher">
+              <p>
+                <a t-attf-href="/academy/{{ slug(teacher) }}">
+                  <t t-esc="teacher.name"/>
+                </a>
+              </p>
+              
+            </t>
+          </div>
+        </div>
+      </t>
+    </template>
+
+    <!-- bio template -->
+    
+    <template id="biography" name="biography">
+      <t t-call="website.layout">
+        <t t-set="title" t-value="Academy"/>
+        <div class="oe_structure">
+          <div class="container">
+            <h3><t t-esc="person.name"/></h3>
+            <div> <t t-esc="person.biography"/> </div>
+          </div>
+        </div>
+      </t>
+    </template>
+
+    <!-- bio edition template -->
+    <template id="biography_edit" name="biography_edit">
+      <t t-call="website.layout"/>
+      <t t-set="title" t-value="Academy | Bio editing"/>
+      <div class="oe_structure">
+        <div class="container">
+          <h3 t-field="person.name" />
+          <p>Last modified: <i t-field="person.write_date" t-options='{"widget": "relative"}' /></p>
+          <div t-field="person.biography" />
+        </div>
+      </div>
+    </template>
+
+
+    <!-- courses: hide the price template -->
+    <template id="product_item_hide_no_price" name="product_item_hide_no_price" inherit_id="website_sale.product_item">
+      <xpath expr="//div[hasclass('product_price')]/b" position="attributes">
+        <attribute name="t-if">product.price &gt; 0</attribute>
+      </xpath>
+    </template>
+
+    <record id="website_sale.products_categories" model="ir.ui.view">
+      <field name="active" eval="True" />
+    </record>
+  </data>
+
+</odoo>
